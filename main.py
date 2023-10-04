@@ -54,14 +54,19 @@ def save_data():
                                        )
 
         if is_ok:
-            with open("data.json", "r") as data_file:
-                data = json.load(data_file)
-                data.update(new_data)
+            try:
+                with open("data.json", "r") as data_file:
+                    data = json.load(data_file)
 
-            with open("data.json", "w") as data_file:
-                json.dump(data, data_file, indent=4)
+            except FileNotFoundError:
+                with open("data.json", "w") as data_file:
+                    json.dump(new_data, data_file, indent=4)
+            else:
+                data.update(new_data)
+            finally:
                 website_entry.delete(0, END)
                 pwd_entry.delete(0, END)
+
 
     else:
         messagebox.showerror(title="Empty Fields", message="Please fill all the empty fields.")
