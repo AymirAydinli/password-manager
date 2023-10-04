@@ -92,14 +92,19 @@ def search():
             except ValueError:
                 messagebox.showerror(title="Empty File", message="Please add some data")
 
+
     except FileNotFoundError:
         messagebox.showerror(title="File Error", message="Please add some data")
     else:
-        email = data[website]['email']
-        pwd = data[website]['password']
+        if website in data:
+            email = data[website]['email']
+            pwd = data[website]['password']
 
-    messagebox.showinfo(title="Search Result", message=f"Email:{email}\n"
+            messagebox.showinfo(title="Search Result", message=f"Email:{email}\n"
                                                        f"Password:{pwd}")
+        else:
+            messagebox.showerror(title="Not Found", message=f"No details for {website}")
+
 
 
 #-------------------------UI Setup---------------------------------#
