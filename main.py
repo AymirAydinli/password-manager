@@ -56,13 +56,20 @@ def save_data():
         if is_ok:
             try:
                 with open("data.json", "r") as data_file:
-                    data = json.load(data_file)
+
+                    try:
+                        data = json.load(data_file)
+                    except ValueError:
+                        raise FileNotFoundError
 
             except FileNotFoundError:
                 with open("data.json", "w") as data_file:
                     json.dump(new_data, data_file, indent=4)
             else:
                 data.update(new_data)
+
+                with open("data.json", 'w') as file:
+                    json.dump(data, file, indent=4)
             finally:
                 website_entry.delete(0, END)
                 pwd_entry.delete(0, END)
@@ -70,6 +77,30 @@ def save_data():
 
     else:
         messagebox.showerror(title="Empty Fields", message="Please fill all the empty fields.")
+
+
+#-------------------------Website Search---------------------------#
+
+def search():
+
+    website = website_entry.get()
+
+    try:
+        with open('data.json', 'r') as data_file:
+            try:
+                data = json.load(data_file)
+            except ValueError:
+                messagebox.showerror(title="Empty File", message="Please add some data")
+
+    except FileNotFoundError:
+        messagebox.showerror(title="File Error", message="Please add some data")
+    else:
+        email = data[website]['email']
+        pwd = data[website]['password']
+
+    messagebox.showinfo(title="Search Result", message=f"Email:{email}\n"
+                                                       f"Password:{pwd}")
+
 
 #-------------------------UI Setup---------------------------------#
 
@@ -87,9 +118,9 @@ canvas.grid(column=1,row=0)
 website_label = Label(text='Website:')
 website_label.grid(column = 0, row = 1)
 
-website_entry = Entry(width=35)
+website_entry = Entry(width=21)
 website_entry.focus()
-website_entry.grid(column = 1, row = 1, columnspan = 2)
+website_entry.grid(column = 1, row = 1)
 
 email_label = Label(text='Email/Username:')
 email_label.grid(column = 0, row = 2)
@@ -111,6 +142,9 @@ btn_generate.grid(column=2, row=3)
 
 btn_add = Button(text='Add', width=36, bg='light blue', fg='black', command=save_data)
 btn_add.grid(column=1, row=4, columnspan = 2)
+
+btn_search = Button(text="Search", width=13, command=search)
+btn_search.grid(column=2, row=1)
 
 
 
