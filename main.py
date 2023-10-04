@@ -39,6 +39,13 @@ def save_data():
     website = website_entry.get()
     email = email_entry.get()
     pwd = pwd_entry.get()
+    new_data = {
+        website: {
+            "email": email,
+            "password": pwd
+
+         }
+    }
 
     if website != "" and email != "" and pwd != "":
 
@@ -47,8 +54,12 @@ def save_data():
                                        )
 
         if is_ok:
-            with open("data.txt", "a") as data_file:
-                data_file.write(f"{website} | {email} | {pwd}\n")
+            with open("data.json", "r") as data_file:
+                data = json.load(data_file)
+                data.update(new_data)
+
+            with open("data.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
                 website_entry.delete(0, END)
                 pwd_entry.delete(0, END)
 
